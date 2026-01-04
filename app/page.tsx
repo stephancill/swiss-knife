@@ -27,6 +27,7 @@ const subdomainToLabel = {
   [subdomains.APPS.base]: "Apps",
   [subdomains.SOLIDITY.base]: "Solidity",
   [subdomains.USDC_PAY.base]: "USDC Pay",
+  [subdomains.SIGNATURE_DEBUGGER.base]: "Signature Debugger",
 };
 
 const Btn = ({

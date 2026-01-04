@@ -75,6 +75,10 @@ const subdomains = {
     base: "usdc-pay",
     paths: [],
   },
+  SIGNATURE_DEBUGGER: {
+    base: "signature-debugger",
+    paths: [],
+  },
 };
 
 module.exports = subdomains;
