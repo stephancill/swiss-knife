@@ -6,7 +6,6 @@ import {
 	type Hex,
 	isHex,
 } from "viem";
-import { decodeABIEncodedData } from "@/lib/decoder";
 import { decodeWithSelector } from "@/lib/decoder";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,34 +61,32 @@ export function useFactoryDecode(
 			if (!create2Factory || !factoryCalldata)
 				return null;
 
-			try {
-				// Use Swiss-knife's decoder instead of WhatsABI
-				const result = await decodeABIEncodedData({
-					calldata: factoryCalldata as Hex,
-				});
+		try {
+		// Use Swiss-knife's decoder instead of WhatsABI
+		const result = await decodeWithSelector({ calldata: factoryCalldata });
 
-				if (result) {
-					const decoded = decodeFunctionData({
-						abi: [result.fragment] as Abi,
-						data: factoryCalldata as Hex,
-					});
+		if (result) {
+			const decoded = decodeFunctionData({
+				abi: [{ ...result.fragment }] as Abi,
+				data: factoryCalldata as Hex,
+			});
 
-					if (decoded.args) {
-						const args = await enrichArgs(
-							decoded.args as unknown[],
-							client,
-						);
-						return { ...decoded, args };
-					}
-
-					return decoded;
-				}
-
-				return null;
-			} catch (e) {
-				console.error("Factory decode error:", e);
-				throw e;
+			if (decoded.args) {
+				const args = await enrichArgs(
+					decoded.args as unknown[],
+					client,
+				);
+				return { ...decoded, args };
 			}
+
+			return decoded;
+		}
+
+		return null;
+	} catch (e) {
+		console.error("Factory decode error:", e);
+		throw e;
+	}
 		},
 		enabled: !!create2Factory && !!factoryCalldata,
 		retry: false,
